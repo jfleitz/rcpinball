@@ -1,0 +1,27 @@
+matchplayapiurl: https://matchplay.api.com
+games:
+- name: Wizard of Oz
+  imagefile: woz.png
+  inprogress: false
+  currentplayer: 0
+  ballinplay: 0
+  leftflipperport: 0
+  rightflipperport: 0
+  plungerport: 0
+- name: Tron
+  imagefile: tron.png
+  inprogress: false
+  currentplayer: 0
+  ballinplay: 0
+  leftflipperport: 0
+  rightflipperport: 0
+  plungerport: 0
+players:
+- name: Mario
+  matchplayid: 0
+  pinnumber: 1234
+  isconnected: false
+- name: Luigi
+  matchplayid: 1
+  pinnumber: 5678
+  isconnected: false

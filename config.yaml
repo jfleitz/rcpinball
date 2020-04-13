@@ -1,0 +1,132 @@
+games:
+- ballinplay: 0
+  currentplayer: 0
+  imagefile: woz.png
+  inprogress: false
+  leftflipperport: ""
+  name: Wizard of Oz
+  plungerport: ""
+  rightflipperport: ""
+  upperleftflipperport: ""
+  upperrightflipperport: ""
+- ballinplay: 0
+  currentplayer: 0
+  imagefile: tron.png
+  inprogress: false
+  leftflipperport: ""
+  name: Tron
+  plungerport: ""
+  rightflipperport: ""
+  upperleftflipperport: ""
+  upperrightflipperport: ""
+matchplayapiurl: https://matchplay.api.com
+players:
+- name: Jeremy Fleitz
+  matchplayid: 62923
+  isconnected: false
+  pin: "2452"
+- name: Whayne T Rouse
+  matchplayid: 75221
+  isconnected: false
+  pin: "3206"
+- name: Matt Fleitz
+  matchplayid: 62924
+  isconnected: false
+  pin: "4544"
+- name: Todd Dennis
+  matchplayid: 64658
+  isconnected: false
+  pin: "3801"
+- name: Adam Masciocchi
+  matchplayid: 115634
+  isconnected: false
+  pin: "9620"
+- name: Joe Embry
+  matchplayid: 72004
+  isconnected: false
+  pin: "8222"
+- name: Brian Marks
+  matchplayid: 102165
+  isconnected: false
+  pin: "8065"
+- name: Steven Schulte
+  matchplayid: 62943
+  isconnected: false
+  pin: "5237"
+- name: Greg Knight
+  matchplayid: 62921
+  isconnected: false
+  pin: "7466"
+- name: Ken Longshore
+  matchplayid: 65566
+  isconnected: false
+  pin: "8015"
+- name: Willy Allen
+  matchplayid: 75219
+  isconnected: false
+  pin: "2128"
+- name: Nikki Miller
+  matchplayid: 75220
+  isconnected: false
+  pin: "4488"
+- name: Dusty Segretto
+  matchplayid: 62949
+  isconnected: false
+  pin: "0754"
+- name: Sarah Syring
+  matchplayid: 114218
+  isconnected: false
+  pin: "9199"
+- name: Elizabeth Gieske
+  matchplayid: 107495
+  isconnected: false
+  pin: "3559"
+- name: Sean Davis
+  matchplayid: 62935
+  isconnected: false
+  pin: "1201"
+- name: Caleb Cecil
+  matchplayid: 79765
+  isconnected: false
+  pin: "1762"
+- name: Robert Cecil
+  matchplayid: 62934
+  isconnected: false
+  pin: "0860"
+- name: Rob Smith CA
+  matchplayid: 82034
+  isconnected: false
+  pin: "4821"
+- name: Jeremy Ryan
+  matchplayid: 72188
+  isconnected: false
+  pin: "0154"
+- name: Justin Ryan
+  matchplayid: 72180
+  isconnected: false
+  pin: "5853"
+- name: Katie Ryan
+  matchplayid: 72190
+  isconnected: false
+  pin: "5918"
+- name: Tim Ellis
+  matchplayid: 67068
+  isconnected: false
+  pin: "1569"
+- name: Nathan Brandt
+  matchplayid: 85152
+  isconnected: false
+  pin: "3789"
+- name: Tim Carpenter MI
+  matchplayid: 92168
+  isconnected: false
+  pin: "4600"
+- name: Seth Rummel
+  matchplayid: 137295
+  isconnected: false
+  pin: "5636"
+- name: Morgan Knehans
+  matchplayid: 137296
+  isconnected: false
+  pin: "6350"
+testmode: false
