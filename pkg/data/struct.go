@@ -32,6 +32,7 @@ type Game struct {
 type Configuration struct {
 	MatchPlayAPIURL string
 	TournamentID    string
+	AdminPin        int
 	TestMode        bool
 	Games           []Game
 	Players         []Player

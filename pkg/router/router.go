@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -44,23 +45,87 @@ func CreateServer(cfg *data.Configuration) {
 
 	//API calls needed:
 	//Players
-	api.GET("/players", getPlayers)                //List all players
-	api.POST("/players/:id/auth/:pin", authPlayer) //Auth Player (passing playerID and pin)
-
+	api.GET("/players", getPlayers) //List all players
 	//Current game
 	api.GET("/games", getGames)       //Game Status (Not Started, Ball 1, 2,3 Complete)
 	api.GET("/game/:id", currentGame) //Game Status (Not Started, Ball 1, 2,3 Complete) //Which Player is up
 
-	//Active Player control
-	api.GET("/button/:buttonID/action/:actionID/player/:playerID", controlFlipper) //If "Playing" and it is your player ID, then allow for control to be passed back (flippers and plunger)
-	api.GET("/autolaunch/player/:playerID", autoLaunchBall)
+	api.POST("/players/:id/auth/:pin", authPlayer) //Auth Player (passing playerID and pin)
 
+	api.Use(CheckUser())
+	//Active Player control
+	api.GET("/button/:buttonID/action/:actionID/player/:userid/pin/:pin", controlFlipper) //If "Playing" and it is your player ID, then allow for control to be passed back (flippers and plunger)
+	api.GET("/autolaunch/player/:userid/pin/:pin", autoLaunchBall)
+
+	admin := router.Group("/admin")
 	//Admin page
-	api.GET("/admin/matchplay/retrieve/:id", retrieveMatchPlay) //Retrieve MatchPlay info (should get arenas and players)
-	api.POST("/admin/player/:id/pin", setPlayerPin)             //Set Pin ID for a player
-	api.POST("/admin/game/:id/player", setActivePlayer)         //Set Active Player
-	api.POST("/admin/game/:id/status", gameStatus)              //Set Active Game Status
+	admin.Use(CheckAdmin())
+	admin.GET("/pin/:pin/matchplay/retrieve/:id", retrieveMatchPlay) //Retrieve MatchPlay info (should get arenas and players)
+	admin.POST("/pin/:pin/player/:id/pin", setPlayerPin)             //Set Pin ID for a player
+	admin.POST("/pin/:pin/game/:id/player", setActivePlayer)         //Set Active Player
+	admin.POST("/pin/:pin/game/:id/status", gameStatus)              //Set Active Game Status
 
 	log.Infoln("Hosting on port 3000")
 	router.Run(":3000")
+}
+
+func CheckUser() gin.HandlerFunc {
+	log.Infoln("CheckUser called")
+
+	return func(c *gin.Context) {
+		log.Infoln("CheckFunc called")
+		user := c.Param("userid")
+		pin := c.Param("pin")
+
+		//user := c.Request.FormValue("mpid")
+		uid, err := strconv.Atoi(user)
+		if err != nil {
+			c.AbortWithStatusJSON(400, gin.H{"error": "invalid user id"})
+			return
+		}
+
+		//pin := c.Request.FormValue("pin_number")
+
+		for _, p := range config.Players {
+			if p.MatchPlayID == uid {
+				if p.Pin == pin {
+					//all good, so exit
+					c.Next()
+					return
+				} else {
+					c.AbortWithStatusJSON(400, gin.H{"error": "pin mismatch"})
+					return
+				}
+			}
+		}
+
+		if len(config.Players) == 0 {
+			log.Infoln("players is 0")
+		}
+
+		c.AbortWithStatusJSON(400, gin.H{"error": "unknown user"})
+	}
+}
+
+func CheckAdmin() gin.HandlerFunc {
+	log.Infoln("CheckAdmin called")
+
+	return func(c *gin.Context) {
+		log.Infoln("CheckAdminFunc called")
+		pin := c.Param("pin")
+
+		//user := c.Request.FormValue("mpid")
+		pinID, err := strconv.Atoi(pin)
+		if err != nil {
+			c.AbortWithStatusJSON(400, gin.H{"error": "invalid pin number"})
+			return
+		}
+
+		//pin := c.Request.FormValue("pin_number")
+		if pinID != config.AdminPin {
+			c.AbortWithStatusJSON(400, gin.H{"error": "admin pin mismatch"})
+			return
+		}
+		c.Next()
+	}
 }
