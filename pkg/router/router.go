@@ -69,6 +69,7 @@ func CreateServer(cfg *data.Configuration) {
 	router.Run(":3000")
 }
 
+//CheckUser verifies the user id and pin number passed with the request
 func CheckUser() gin.HandlerFunc {
 	log.Infoln("CheckUser called")
 
@@ -92,10 +93,10 @@ func CheckUser() gin.HandlerFunc {
 					//all good, so exit
 					c.Next()
 					return
-				} else {
-					c.AbortWithStatusJSON(400, gin.H{"error": "pin mismatch"})
-					return
 				}
+				c.AbortWithStatusJSON(400, gin.H{"error": "pin mismatch"})
+				return
+
 			}
 		}
 
@@ -107,6 +108,7 @@ func CheckUser() gin.HandlerFunc {
 	}
 }
 
+//CheckAdmin verifies the pin id passed to the configured admin pin number
 func CheckAdmin() gin.HandlerFunc {
 	log.Infoln("CheckAdmin called")
 
