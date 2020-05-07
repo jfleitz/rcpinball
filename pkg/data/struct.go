@@ -8,6 +8,7 @@ import (
 
 //Player contains the information about a player listed to play
 type Player struct {
+	ID          string
 	Name        string
 	MatchPlayID int
 	IsConnected bool
@@ -32,6 +33,7 @@ type Game struct {
 type Configuration struct {
 	MatchPlayAPIURL string
 	TournamentID    string
+	AdminPin        int
 	TestMode        bool
 	Games           []Game
 	Players         []Player

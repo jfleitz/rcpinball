@@ -1,0 +1,35 @@
+  .btnflippers {
+    background: rgb(173, 27, 27);
+    border-radius: 72px;
+    font-size: 18px;
+    color: white;
+    height: 500%;
+    width: 100;
+  }
+
+  .btnlaunch {
+    background: rgb(255, 238, 0);
+    border-radius: 72px;
+    font-size: 18px;
+    color: black;
+    float: right;
+    height: 150%;
+    width: 40%;
+  }
+
+  .padrow {
+    background: rgb(255, 238, 0);
+    border-radius: 72px;
+    font-size: 72px;
+    color: black;
+    float: right;
+    height: 400%;
+    width: 100;
+  }
+  
+
+/*
+  .btnrightflipper {
+    className="float-right"
+  }*/
+  
