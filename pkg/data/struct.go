@@ -8,6 +8,7 @@ import (
 
 //Player contains the information about a player listed to play
 type Player struct {
+	ID          string
 	Name        string
 	MatchPlayID int
 	IsConnected bool

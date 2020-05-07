@@ -43,6 +43,8 @@ func CreateServer(cfg *data.Configuration) {
 
 	}
 
+	//api.GET("/socket", socketHandle)
+
 	//API calls needed:
 	//Players
 	api.GET("/players", getPlayers) //List all players
@@ -50,7 +52,7 @@ func CreateServer(cfg *data.Configuration) {
 	api.GET("/games", getGames)       //Game Status (Not Started, Ball 1, 2,3 Complete)
 	api.GET("/game/:id", currentGame) //Game Status (Not Started, Ball 1, 2,3 Complete) //Which Player is up
 
-	api.POST("/players/:id/auth/:pin", authPlayer) //Auth Player (passing playerID and pin)
+	api.POST("/player/login", authPlayer) //Auth Player (passing playerID and pin)
 
 	api.Use(CheckUser())
 	//Active Player control

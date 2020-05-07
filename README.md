@@ -22,3 +22,10 @@ You first setup a MatchPlay tournament. It doesn't matter the format etc, but
 
 ## Links to building this:
 https://dev.to/codehakase/building-a-web-app-with-go-gin-and-react-5ke
+
+## packages reqd:
+npm install react-scripts@2.1.8
+npm install react-bootstrap
+
+Settings max open files:
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p

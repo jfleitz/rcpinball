@@ -16,11 +16,54 @@ func getPlayers(c *gin.Context) {
 	c.JSON(http.StatusOK, config.Players)
 }
 
+type usr struct {
+	UserID string `json:"user"`
+	PinID  string `json:"pin"`
+}
+
 // authPlayer authorizes the player in the tournament
 func authPlayer(c *gin.Context) {
+
 	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, gin.H{
-		"message": "not implemented",
+	usr := usr{}
+	err := c.BindJSON(&usr)
+	if err != nil {
+		log.Infof("Error was: %v", err)
+	}
+
+	log.Infof("12 UserID is: %v, pin is %v\n", usr.UserID, usr.PinID)
+
+	for _, player := range config.Players {
+		if player.ID == usr.UserID {
+			if player.Pin == usr.PinID {
+				log.Infoln("user and pin match\n")
+
+				//logged in
+				c.JSON(http.StatusOK, gin.H{
+					"loggedIn": true,
+				})
+				player.IsConnected = true
+
+			} else {
+				//not logged in
+				log.Infoln("user and pin do not match\n")
+
+				player.IsConnected = false
+				c.JSON(http.StatusUnauthorized, gin.H{
+					"error":    "invalid pin",
+					"loggedIn": false,
+				})
+
+			}
+			return
+		}
+
+	}
+
+	log.Infoln("user and pin not found\n")
+	c.JSON(http.StatusUnauthorized, gin.H{
+		"error": "user not found",
+		"ok":    false,
 	})
 }
 
