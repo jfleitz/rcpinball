@@ -35,7 +35,7 @@ export class MPPlayer extends Component {
                 </thead>
                 <tbody>
                     {this.props.players.map((player)=>{
-                       if(!player.signedIn){
+                       if(!player.connected){
                             return <tr className={styles.signin}>
                             <td>{ player.id }</td>
                             <td>{ player.name }</td>
