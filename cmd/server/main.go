@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jfleitz/mpremote/pkg/data"
-	"github.com/jfleitz/mpremote/pkg/router"
+	"github.com/jfleitz/rcpinball/pkg/data"
+	"github.com/jfleitz/rcpinball/pkg/router"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	"github.com/jfleitz/mpremote/pkg/data"
+	"github.com/jfleitz/rcpinball/pkg/data"
 	log "github.com/sirupsen/logrus"
 )
 

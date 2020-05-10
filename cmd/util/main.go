@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/jfleitz/mpremote/pkg/data"
+	"github.com/jfleitz/rcpinball/pkg/data"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
