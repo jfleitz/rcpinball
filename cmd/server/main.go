@@ -29,6 +29,7 @@ func main() {
 	viper.Unmarshal(&conf)
 	log.Infof("Total #players: %v \n", len(conf.Players))
 	log.Infof("Admin pin is: \n", conf.AdminPin)
+	log.Infof("Game configured is: %v", conf.Game.Name)
 	log.Infoln("Config read! Starting Server")
 	router.CreateServer(&conf)
 }
