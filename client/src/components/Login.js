@@ -31,8 +31,11 @@ export class Login extends Component {
     render() {
         let players = this.props.players;
         let availPlayers = players.filter(function(player) {
-            return player.signedIn === false;
+            return player.connected === false;
         })
+
+        //allowing to reuse if page closed and reloaded
+        availPlayers = players;
 
         let options = availPlayers.map((player)=>
         <option key={player.id} value={player.id}>{player.name}</option>
@@ -53,10 +56,9 @@ export class Login extends Component {
                               aria-describedby="Pin #"
                               value={this.state.value} 
                               onChange={this.handleChange}
+                              style={{width: '20% !important'}}
                             />
-                            <InputGroup.Append>
-                              <Button variant="outline-secondary" onClick={() => updateUser({user: this.state.user, pin: this.state.pin})}>Button</Button>
-                            </InputGroup.Append>
+                            <Button variant="outline-secondary" onClick={() => updateUser({user: this.state.user, pin: this.state.pin})}>Button</Button>
                           </InputGroup>
             </div>)
 

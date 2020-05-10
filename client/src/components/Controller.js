@@ -20,12 +20,14 @@ export class Controller extends Component {
     flipperDown = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        var url='/api/button/' + e.target.value + '/action/1/player/1';
+  //      var url='/api/button/' + e.target.value + '/action/1/player/1';
     
-        console.log('Flipper pressed, calling ',url);
+        console.log('Flipper down');
+        var sendAction = this.props.sendAction;
+        sendAction({button: e.target.value , action: "down"});
     
         ///game/:gameID/player/:playerID/action/:actionID
-        fetch(url);
+//        fetch(url);
       /*.then((response) => {
         return response.json();
       })
@@ -38,12 +40,14 @@ export class Controller extends Component {
       flipperUp = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        var url='/api/button/' + e.target.value + '/action/0/player/1';
+    //    var url='/api/button/' + e.target.value + '/action/0/player/1';
     
-        console.log('Flipper pressed, calling ',url);
-    
+        console.log('Flipper up');
+        var sendAction = this.props.sendAction;
+        sendAction({button: e.target.value , action: "up"});
+        
         ///game/:gameID/player/:playerID/action/:actionID
-        fetch(url);
+      //  fetch(url);
       /*.then((response) => {
         return response.json();
       })
@@ -55,7 +59,8 @@ export class Controller extends Component {
       }
       handlePlunge = () => {
         console.log('Plunge Called');
-        fetch('/api/autolaunch/player/:playerID');
+        var sendAction = this.props.sendAction;
+        sendAction({button:"plunge", action: "down"})        
       }
 
       checkUser() {
@@ -65,7 +70,7 @@ export class Controller extends Component {
           console.log("player is not up: ", this.props.user.playerID, this.props.game.playerUp);
           ret = true;
         }
-        if (this.state.gameOver) {
+        if (this.props.game.gameOver) {
           console.log("game is over");
           ret = true;
         }
@@ -75,6 +80,8 @@ export class Controller extends Component {
       //style={{ height: 100, width: 100, marginTop: 10 }}
     render() {
         let ret = this.checkUser();
+        var sendAction = this.props.sendAction;
+
         if(ret){
           return (
             <div className="Controller">
