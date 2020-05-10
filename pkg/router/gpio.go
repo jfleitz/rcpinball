@@ -67,10 +67,12 @@ func (r *Machine) Initialize() error {
 }
 
 func (r *Machine) launch() {
-	t := time.NewTicker(10 * time.Millisecond)
+	defer r.SetSolenoid(SolAutoLaunch, false)
+
+	t := time.NewTicker(20 * time.Millisecond)
 	r.SetSolenoid(SolAutoLaunch, true)
 	<-t.C
-	r.SetSolenoid(SolAutoLaunch, false)
+
 }
 
 //LaunchBall calls a goroutine to autolaunch the ball
@@ -87,6 +89,19 @@ func (r *Machine) SetSolenoid(solID int, On bool) {
 	log.Debugf("SetSolenoid called: solID: %v, On: %v\n", solID, On)
 
 	log.Debugf("Solenoids configured: %v,%v,%v,%v,%v\n", r.LeftFlipper, r.RightFlipper, r.UpperLeftFlipper, r.UpperRightFlipper, r.AutoLaunch)
+
+	/*
+
+		if solID == SolAutoLaunch {
+			if On {
+				gpioreg.ByName(r.AutoLaunch).Out(gpio.High)
+			} else {
+				gpioreg.ByName(r.AutoLaunch).Out(gpio.Low)
+			}
+
+			return
+		}
+	*/
 
 	output := gpio.High
 	if On {

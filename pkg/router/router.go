@@ -17,14 +17,14 @@ var raspi Machine
 func CreateServer(cfg *data.Configuration) {
 	raspi.Test = cfg.TestMode
 
-	if cfg.TestMode {
+	if !cfg.TestMode {
 		log.Infoln("Initializing Raspi Ports")
 		raspi.Initialize()
-		raspi.LeftFlipper = cfg.Games[0].LeftFlipperPort
-		raspi.RightFlipper = cfg.Games[0].RightFlipperPort
-		raspi.UpperLeftFlipper = cfg.Games[0].UpperLeftFlipperPort
-		raspi.UpperRightFlipper = cfg.Games[0].UpperRightFlipperPort
-		raspi.AutoLaunch = cfg.Games[0].PlungerPort
+		raspi.LeftFlipper = cfg.Game.LeftFlipperPort
+		raspi.RightFlipper = cfg.Game.RightFlipperPort
+		raspi.UpperLeftFlipper = cfg.Game.UpperLeftFlipperPort
+		raspi.UpperRightFlipper = cfg.Game.UpperRightFlipperPort
+		raspi.AutoLaunch = cfg.Game.PlungerPort
 		raspi.TurnOffSolenoids()
 	}
 
@@ -33,6 +33,11 @@ func CreateServer(cfg *data.Configuration) {
 	router := gin.Default()
 
 	router.Use(static.Serve("/", static.LocalFile("./client/build", true)))
+
+	router.NoRoute(func(c *gin.Context) {
+		c.File("./client/build/index.html")
+	})
+
 	api := router.Group("/api")
 	{
 		api.GET("/", func(c *gin.Context) {
@@ -43,8 +48,6 @@ func CreateServer(cfg *data.Configuration) {
 
 	}
 
-	//api.GET("/socket", socketHandle)
-
 	//API calls needed:
 	//Players
 	api.GET("/players", getPlayers) //List all players
@@ -54,7 +57,7 @@ func CreateServer(cfg *data.Configuration) {
 
 	api.POST("/player/login", authPlayer) //Auth Player (passing playerID and pin)
 
-	api.Use(CheckUser())
+	/// JAF uncheck api.Use(CheckUser())
 	//Active Player control
 	api.GET("/button/:buttonID/action/:actionID/player/:userid/pin/:pin", controlFlipper) //If "Playing" and it is your player ID, then allow for control to be passed back (flippers and plunger)
 	api.GET("/autolaunch/player/:userid/pin/:pin", autoLaunchBall)
@@ -68,6 +71,14 @@ func CreateServer(cfg *data.Configuration) {
 	admin.POST("/pin/:pin/game/:id/status", gameStatus)              //Set Active Game Status
 
 	log.Infoln("Hosting on port 3000")
+
+	pool := NewPool()
+	go pool.Start()
+
+	api.GET("/socket", func(c *gin.Context) {
+		serveWs(pool, c.Writer, c.Request)
+	})
+
 	router.Run(":3000")
 }
 

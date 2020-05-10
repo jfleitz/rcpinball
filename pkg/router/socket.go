@@ -1,62 +1,52 @@
 package router
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
+	"net/http"
 
-	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/gorilla/websocket"
 )
 
+/*
 type gameStats struct {
-	GameOver   bool `json:"gameOver"`
-	BallInPlay int  `json:"ballInPlay"`
-	PlayerUp   int  `json:"playerUp"`
+	GameOver   bool          `json:"gameOver"`
+	BallInPlay int           `json:"ballInPlay"`
+	PlayerUp   int           `json:"playerUp"`
+	Players    []data.Player `json:"players"`
 }
-
-var clients = make(map[int]*websocket.Conn) //keeping track of who is connected.
-var statsUpdate = make(chan *gameStats)
+*/
 
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	//	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-func socketHandle(c *gin.Context) {
-	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
+func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+	conn, err := wsupgrader.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Printf("Failed to set websocket upgrade: %+v", err)
-		return
+		log.Println(err)
+		return nil, err
 	}
-	player := 1 //TODO substitute this for the actual player. (check pin again too)
-	clients[player] = conn
 
-	/*
-		for {
-
-			t, msg, err := conn.ReadMessage()
-			if err != nil {
-				break
-			}
-			conn.WriteMessage(t, msg)
-		}
-	*/
+	return conn, nil
 }
 
-func statsRoutine() {
-	for {
-		val := <-statsUpdate
-		toSend, _ := json.Marshal(val)
-		// send to every client that is currently connected
-		for i, client := range clients {
-
-			err := client.WriteMessage(websocket.TextMessage, []byte(toSend))
-			if err != nil {
-				log.Printf("Websocket error: %s", err)
-				client.Close()
-				delete(clients, i)
-			}
-		}
+func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("WebSocket Endpoint Hit")
+	conn, err := Upgrade(w, r)
+	if err != nil {
+		log.Infoln("Error from serveWS")
+		fmt.Fprintf(w, "%+v\n", err)
 	}
+
+	client := &Client{
+		Conn: conn,
+		Pool: pool,
+	}
+
+	pool.Register <- client
+	client.Read()
 }
