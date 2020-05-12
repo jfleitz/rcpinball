@@ -2,29 +2,32 @@ package router
 
 import (
 	"encoding/json"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gorilla/websocket"
 )
 
+//Client is the websocket client
 type Client struct {
 	ID   string
 	Conn *websocket.Conn
 	Pool *Pool
 }
 
+//Message is the message struct passed btw client and server
 type Message struct {
 	Type int    `json:"type"`
 	Body string `json:"body"`
 }
 
+//RecMessage is the body value of the Message
 type RecMessage struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
 }
 
+//Control is the Action struct
 type Control struct {
 	PlayerID string `json:"playerID"`
 	Pin      string `json:"pin"`
@@ -37,18 +40,14 @@ func (c *Client) Read() {
 		c.Pool.Unregister <- c
 		c.Conn.Close()
 	}()
-	log.Infoln("Message processing 1")
+
 	for {
-		log.Infoln("Message processing 2")
 		messageType, p, err := c.Conn.ReadMessage()
-		log.Infoln("Message processing 3")
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		log.Infoln("Message processing 123")
 		message := Message{Type: messageType, Body: string(p)}
-		fmt.Printf("Message Received: %+v\n", message)
 
 		var msg RecMessage
 		err = json.Unmarshal([]byte(message.Body), &msg)
@@ -59,8 +58,6 @@ func (c *Client) Read() {
 		}
 
 		data := []byte(msg.Data)
-
-		log.Infof("Message Name is: %v", msg.Name)
 
 		switch msg.Name {
 		case "action":
@@ -74,8 +71,6 @@ func (c *Client) Read() {
 		case "refreshPlayers":
 			c.sendPlayerList()
 		}
-
-		//c.Pool.Broadcast <- message
 	}
 }
 
@@ -108,8 +103,6 @@ func (c *Client) action(data []byte) {
 }
 
 func (c *Client) updatePlayers(data []byte) {
-	//unmarshall data here too
-
 	err := json.Unmarshal(data, &config.Players)
 
 	if err != nil {
@@ -121,7 +114,6 @@ func (c *Client) updatePlayers(data []byte) {
 }
 
 func (c *Client) updateGame(data []byte) {
-	//unmarshall data here too
 	err := json.Unmarshal(data, &config.Game)
 
 	if err != nil {
@@ -129,15 +121,10 @@ func (c *Client) updateGame(data []byte) {
 		return
 	}
 
-	//log.Infof("Received PlayerID: %v, Pin: %v, Button: %v, Action: %v ", ctl.PlayerID, ctl.Pin, ctl.Button, ctl.Action)
-
 	c.sendGameStats()
 }
 
 func (c *Client) sendGameStats() {
-	log.Infoln("SendGameStats called")
-
-	//send gameState
 	b, err := json.Marshal(config.Game)
 
 	if err != nil {
@@ -160,9 +147,6 @@ func (c *Client) sendGameStats() {
 }
 
 func (c *Client) sendPlayerList() {
-
-	log.Infoln("SendPlayerList called")
-	//send gameState
 	b, err := json.Marshal(config.Players)
 
 	if err != nil {
@@ -180,8 +164,6 @@ func (c *Client) sendPlayerList() {
 		log.Printf("Error with marshing the message to send for player list: %v", err)
 		return
 	}
-
-	//message := Message{Type: websocket.TextMessage, Body: string(b)}
 
 	c.Pool.Broadcast <- msg
 }

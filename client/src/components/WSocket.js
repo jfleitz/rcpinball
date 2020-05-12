@@ -5,13 +5,10 @@ export default class WSocket {
     constructor(ws = new WebSocket(), ee = new EventEmitter()) {
         this.ws = ws;
         this.ee = ee;
-        // attach message function as event listener for incoming websocket messages.
+
         ws.onmessage = this.message.bind(this);
-        // attach open function tas event listener on websocket connections.
         ws.onopen = this.open.bind(this);
-        // attache close function as listener on websocket disconnections.
         ws.onclose = this.close.bind(this);
-        // attache error function as listener on websocket errors.
         ws.onerror = this.error.bind(this);
     };
 

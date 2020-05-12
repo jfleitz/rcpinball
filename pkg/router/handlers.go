@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -23,46 +24,38 @@ type usr struct {
 
 // authPlayer authorizes the player in the tournament
 func authPlayer(c *gin.Context) {
-
 	c.Header("Content-Type", "application/json")
 	usr := usr{}
 	err := c.BindJSON(&usr)
 	if err != nil {
-		log.Infof("Error was: %v", err)
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":    fmt.Sprintf("cound not unmarshall user: %v", err),
+			"loggedIn": false,
+		})
+		return
 	}
-
-	log.Infof("12 UserID is: %v, pin is %v\n", usr.UserID, usr.PinID)
 
 	for i, player := range config.Players {
 		if player.ID == usr.UserID {
 			if player.Pin == usr.PinID {
-				log.Infoln("user and pin match\n")
-
 				//logged in
 				c.JSON(http.StatusOK, gin.H{
 					"loggedIn": true,
 				})
 
 				config.Players[i].IsConnected = true
-
 			} else {
 				//not logged in
-				log.Infoln("user and pin do not match\n")
-
 				config.Players[i].IsConnected = false
 				c.JSON(http.StatusUnauthorized, gin.H{
 					"error":    "invalid pin",
 					"loggedIn": false,
 				})
-
 			}
-
 			return
 		}
-
 	}
 
-	log.Infoln("user and pin not found\n")
 	c.JSON(http.StatusUnauthorized, gin.H{
 		"error": "user not found",
 		"ok":    false,
@@ -71,9 +64,6 @@ func authPlayer(c *gin.Context) {
 
 // getGames retrieves the list of games in the tournament
 func getGames(c *gin.Context) {
-	log.Infoln("Called getGames()")
-	//log.Infof("****Total Players %v \n", len(config.Players))
-
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, config.Game)
 }
@@ -87,9 +77,6 @@ func currentGame(c *gin.Context) {
 }
 
 func autoLaunchBall(c *gin.Context) {
-	playerID := c.Param("playerID")
-	log.Infof("autoLaunch called!  playerID: %v\n", playerID)
-
 	raspi.LaunchBall()
 }
 
@@ -97,8 +84,7 @@ func autoLaunchBall(c *gin.Context) {
 func controlFlipper(c *gin.Context) {
 	buttonID := c.Param("buttonID")
 	actionID := c.Param("actionID")
-	playerID := c.Param("playerID")
-	log.Infof("controlGame called! buttonID: %v, actionID: %v, playerID: %v\n", buttonID, actionID, playerID)
+
 	sol, err := strconv.Atoi(buttonID)
 	if err != nil {
 		log.Errorf("Button not valid %v, error:", buttonID, err)
@@ -110,15 +96,10 @@ func controlFlipper(c *gin.Context) {
 	}
 
 	raspi.SetSolenoid(sol, actionID == "1")
-	/*	c.Header("Content-Type", "application/json")
-		c.JSON(http.StatusOK, gin.H{
-			"message": "not implemented",
-		})*/
 }
 
 // retrieveMatchPlay retrieves matchplay info
 func retrieveMatchPlay(c *gin.Context) {
-	log.Infoln("Retrieving MatchPlay info")
 	config.Players = make([]data.Player, 0)
 	mpID := c.Param("id")
 	matchplayID, err := strconv.Atoi(mpID)
