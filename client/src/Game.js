@@ -50,6 +50,7 @@ class Game extends Component {
       this.setState({players: res});
     })
 
+    this.loginUser();
 
     // establish websocket connection to backend server.
     let ws = new WebSocket('ws://' + window.location.host + '/api/socket');
@@ -70,6 +71,24 @@ class Game extends Component {
                   
   }
 
+
+  loginUser(){
+    console.log("trying to log in");
+    try{
+      let localUser=localStorage.getItem("user");
+
+      var prevUser = JSON.parse(localUser);
+      if (prevUser != "") {
+        this.updateUser(prevUser);
+      }
+    }
+      catch(err){
+        console.log("error was: ", err);
+      }
+
+    
+  }
+
   /*
   updateUser = (e) => {
     console.log('User: ', e.user, ' pin: ', e.pin);
@@ -80,9 +99,9 @@ class Game extends Component {
 
 
   updateUser = (e) => {
-    console.log('123 loginPlayer called:', e.user, ' pin ', e.pin);
+    console.log('123 loginPlayer called:', e.playerID, ' pin ', e.pin);
     //fetch('/api/player/login');
-    let usr = {user: e.user,
+    let usr = {user: e.playerID,
       pin: e.pin};
 
 
@@ -105,6 +124,9 @@ class Game extends Component {
 
           this.setState({loggedIn: true});
           this.setState({user: {playerID: usr.user, pin: usr.pin}});
+
+          localStorage.setItem("user", JSON.stringify(this.state.user));
+
         }else {
           console.log('not logged in');
           this.setState({loggedIn: false});
@@ -127,6 +149,7 @@ class Game extends Component {
       this.socket.close();
     }
 
+    localStorage.removeItem("user");
 
     console.log('logged out: ', this.loggedIn);
   }

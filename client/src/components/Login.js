@@ -58,7 +58,7 @@ export class Login extends Component {
                               onChange={this.handleChange}
                               style={{width: '20% !important'}}
                             />
-                            <Button variant="outline-secondary" onClick={() => updateUser({user: this.state.user, pin: this.state.pin})}>Button</Button>
+                            <Button variant="outline-secondary" onClick={() => updateUser({playerID: this.state.user, pin: this.state.pin})}>Button</Button>
                           </InputGroup>
             </div>)
 
