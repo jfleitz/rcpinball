@@ -14,16 +14,7 @@ export class MPPlayer extends Component {
         this.setState({pin: event.target.value});
       }
     
-
-    loginPlayer = (e) => {
-        console.log('loginPlayer called:', e.target.id, ' pin ', this.state.pin);
-        //fetch('/api/autolaunch/player/:playerID');
-        console.log(this);
-      }
-
     render() {
-        console.log("props from MPPlayer:", this.props.game);
-        
         return(
             <Table style={{fontSize: "12px" , height: "10px"}}>
                 <thead>
@@ -62,8 +53,7 @@ export class MPPlayer extends Component {
                     })}
                 </tbody>
             </Table>
-        )
-        
+        )        
     }
 }
 

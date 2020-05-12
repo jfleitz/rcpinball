@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './Game.css';
 import Controller from './components/Controller';
 import Login from './components/Login';
 import MPGame from './components/MPGame';
@@ -61,9 +61,6 @@ class Game extends Component {
     // handle connect and discconnect events.
     socket.on('connect', this.onConnect);
     socket.on('disconnect', this.onDisconnect);
-
-    /* EVENT LISTENERS */
-    // event listener to handle 'hello' from a server
     socket.on('players', this.updatePlayers);
     socket.on('gamestate', this.updateGame);
 
@@ -89,21 +86,9 @@ class Game extends Component {
     
   }
 
-  /*
   updateUser = (e) => {
-    console.log('User: ', e.user, ' pin: ', e.pin);
-    this.setState({user: {playerID: e.user, pin: e.pin}})
-    this.setState({loggedIn: true})
-  }
-*/
-
-
-  updateUser = (e) => {
-    console.log('123 loginPlayer called:', e.playerID, ' pin ', e.pin);
-    //fetch('/api/player/login');
     let usr = {user: e.playerID,
       pin: e.pin};
-
 
     fetch('/api/player/login', {
       method: "POST",
@@ -150,31 +135,23 @@ class Game extends Component {
     }
 
     localStorage.removeItem("user");
-
-    console.log('logged out: ', this.loggedIn);
   }
 
 
 
-  // onConnect sets the state to true indicating the socket has connected 
-  //    successfully.
+  // onConnect sets the state to true indicating the socket has connected successfully.
   onConnect = () => {
     console.log('websocket connected');
     this.setState({connected: true});
-
-    //send player info
-    //this.socket.emit('test',JSON.stringify(this.state.user));
   }
 
-  // onDisconnect sets the state to false indicating the socket has been 
-  //    disconnected.
+  // onDisconnect sets the state to false indicating the socket has been disconnected.
   onDisconnect = () => {
     this.setState({connected: false});
   }
 
 
-  //sendAction
-
+  //sendAction tells the server what button was pressed
   sendAction = (e) => {
     let ctl = {
       playerID: this.state.user.playerID,
@@ -186,27 +163,12 @@ class Game extends Component {
     this.socket.emit('action',JSON.stringify(ctl));
   }
 
-  // helloFromClient is an event emitter that sends a hello message to the backend 
-  //    server on the socket.
-  helloFromClient = () => {
-      console.log('saying hello...');
-      this.socket.emit('helloFromClient', 'hello server!');
-  }
-
-  // helloFromServer is an event listener/consumer that handles hello messages 
-  //    from the backend server on the socket.
-  helloFromServer = (data) => {
-      console.log('hello from server! message:', data);
-  }
-
   updatePlayers = (playerList) => {
-    console.log('updating player list:', playerList);
     var newList = JSON.parse(playerList);
     this.setState({players: newList});
   }
 
   updateGame = (gameState) => {
-    console.log('update game state:', gameState);
     var newGame = JSON.parse(gameState);
     this.setState({game: newGame});
   }
@@ -215,20 +177,14 @@ class Game extends Component {
     console.log('received this from the server:', data);
   }
 
-
-
   render() {
-    console.log(this.state);
     if(this.state.loggedIn){
-      console.log('logged in');
       return (
         <div className="App">
           <Container>
             <Row>
               <Col>
                 <Button onClick={this.logout}>Logout</Button>
-                {/* <Button onClick={()=>{this.socket.emit('refreshPlayers','')}}>Players</Button>
-                <Button onClick={()=>{this.socket.emit('refreshGame','')}}>Game</Button> */}
               </Col>
             </Row>
             <Row>
@@ -243,7 +199,6 @@ class Game extends Component {
         </div>
       );  
     }else{
-      console.log('not logged in');
       return (
         <div className="App">
           <MPGame game={this.state.game} players={this.state.players} />

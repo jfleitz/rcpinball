@@ -30,23 +30,4 @@ func main() {
 	viper.SetDefault("TestMode", false)
 	viper.AddConfigPath("./")
 	viper.WriteConfigAs("./config.yaml")
-
-	log.Infof("Before Reading, players from conf.players: %v", conf.Players)
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Errorf("Error with Reading in Config: %v", err)
-		return
-	}
-
-	players := viper.Get("Players")
-
-	log.Infof("Players read: %v", players)
-
-	//reset
-	conf.Players = make([]data.Player, 0)
-
-	viper.UnmarshalKey("Players", conf.Players)
-	log.Infof("Unmarshall to conf Players read: %v", conf.Players)
-
 }

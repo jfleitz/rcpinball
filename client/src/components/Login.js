@@ -27,7 +27,6 @@ export class Login extends Component {
          })
      }
 
-
     render() {
         let players = this.props.players;
         let availPlayers = players.filter(function(player) {
@@ -36,6 +35,7 @@ export class Login extends Component {
 
         //allowing to reuse if page closed and reloaded
         availPlayers = players;
+        //-- 
 
         let options = availPlayers.map((player)=>
         <option key={player.id} value={player.id}>{player.name}</option>

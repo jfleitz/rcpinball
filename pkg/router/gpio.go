@@ -86,22 +86,6 @@ func (r *Machine) SetSolenoid(solID int, On bool) {
 		log.Debugf("SetSolenoid called: solID: %v, On: %v", solID, On)
 		return
 	}
-	log.Debugf("SetSolenoid called: solID: %v, On: %v\n", solID, On)
-
-	log.Debugf("Solenoids configured: %v,%v,%v,%v,%v\n", r.LeftFlipper, r.RightFlipper, r.UpperLeftFlipper, r.UpperRightFlipper, r.AutoLaunch)
-
-	/*
-
-		if solID == SolAutoLaunch {
-			if On {
-				gpioreg.ByName(r.AutoLaunch).Out(gpio.High)
-			} else {
-				gpioreg.ByName(r.AutoLaunch).Out(gpio.Low)
-			}
-
-			return
-		}
-	*/
 
 	output := gpio.High
 	if On {

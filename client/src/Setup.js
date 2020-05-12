@@ -4,7 +4,7 @@ import {Row, Col, Container, Button, InputGroup} from 'react-bootstrap'
 import React, { Component } from 'react';
 import WSocket from './components/WSocket';
 
-import './App.css';
+import './Game.css';
 
 
 class Setup extends Component {
@@ -77,40 +77,30 @@ class Setup extends Component {
       socket.on('gamestate', this.updateGame);
   }
 
-
-
   updatePlayers = (playerList) => {
-    console.log('updating player list:', playerList);
     var newList = JSON.parse(playerList);
     this.setState({players: newList});
   }
 
   updateGame = (gameState) => {
-    console.log('update game state:', gameState);
     var newGame = JSON.parse(gameState);
     this.setState({game: newGame});
   }
-
-
   
   handleChange = (e)=> {
-    console.log('js is now:', e.jsObject);
     this.setState({game: e.jsObject});
   }
 
   playerChange = (e)=> {
-    console.log('playerjs is now:', e.jsObject);
     this.setState({players: e.jsObject});
   }
 
   submitGame = (e)=> {
     this.socket.emit('updateGame',JSON.stringify(this.state.game));
-    console.log('game updated submitted');
   }
 
   submitPlayer = (e)=> {
     this.socket.emit('updatePlayers',JSON.stringify(this.state.players));
-    console.log('players updated submitted');
   }
 
   setPlayer = (e)=> {
@@ -162,11 +152,6 @@ class Setup extends Component {
           
         </div>
       )
-
-  
-
-
-
 
     return (
       <Container>
