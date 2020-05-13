@@ -3,7 +3,7 @@ import './Game.css';
 import Controller from './components/Controller';
 import Login from './components/Login';
 import MPGame from './components/MPGame';
-import { Button } from 'react-bootstrap';
+import { Toast, Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -25,7 +25,8 @@ class Game extends Component {
     loggedIn: false,
     connected: false,
     players: [
-    ]
+    ],
+    loginError: ''
   }
 
   componentDidMount() {
@@ -71,6 +72,7 @@ class Game extends Component {
 
   loginUser(){
     console.log("trying to log in");
+    this.setState({loginError: ""});
     try{
       let localUser=localStorage.getItem("user");
 
@@ -99,7 +101,12 @@ class Game extends Component {
       body: JSON.stringify(usr)
       }).then((response) => {
         if(!response.ok) {
-          console.log(response.text);
+          console.log("response was not ok");
+          this.setState({loginError: 'check user/pin'});
+          this.setState({user: {
+            user: -1,
+            pin: -1
+          }, loggedIn: false});
         }else{
           return(response.json());
         }
@@ -114,7 +121,11 @@ class Game extends Component {
 
         }else {
           console.log('not logged in');
-          this.setState({loggedIn: false});
+          this.setState({user: {
+            user: -1,
+            pin: -1
+          }, loggedIn: false});
+          this.setState({loginError: 'could not log in'});
         }
         //refresh player list anyway
         this.socket.emit('refreshPlayers','');
@@ -129,10 +140,13 @@ class Game extends Component {
       pin: -1
     }, loggedIn: false});
 
+    /*
     if(this.state.connected){
       console.log('disconnecting socket');
       this.socket.close();
-    }
+      this.setState({connected: false});
+    }*/
+
 
     localStorage.removeItem("user");
   }
@@ -166,11 +180,13 @@ class Game extends Component {
   updatePlayers = (playerList) => {
     var newList = JSON.parse(playerList);
     this.setState({players: newList});
+    this.loginUser(); //relogin, since the pin numbers could have changed
   }
 
   updateGame = (gameState) => {
     var newGame = JSON.parse(gameState);
     this.setState({game: newGame});
+    this.loginUser();
   }
 
   rcvMessage = (data) => {
@@ -178,6 +194,7 @@ class Game extends Component {
   }
 
   render() {
+
     if(this.state.loggedIn){
       return (
         <div className="App">
@@ -199,8 +216,26 @@ class Game extends Component {
         </div>
       );  
     }else{
+      if(this.state.loginError!="") {
+        //show toast
+            console.log('Showing toast');
+      }
+
       return (
         <div className="App">
+          <Toast
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+            }} show={this.state.loginError!=""} delay={3000} autohide
+            onClose={()=> this.setState({loginError: ""})}>
+              <Toast.Header>
+                <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
+                <strong className="mr-auto">Login</strong>
+              </Toast.Header>
+          <Toast.Body>{this.state.loginError}</Toast.Body>
+          </Toast>    
           <MPGame game={this.state.game} players={this.state.players} />
           <Login players={this.state.players} updateUser = {this.updateUser} />
         </div>

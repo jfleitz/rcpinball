@@ -13,3 +13,9 @@ a {
   color: #333;
   text-decoration: none;
 }
+
+Toast {
+  position: absolute;
+  top: 0;
+  right: 0
+}
