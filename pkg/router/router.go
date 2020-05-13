@@ -56,9 +56,13 @@ func CreateServer(cfg *data.Configuration) {
 
 	api.POST("/player/login", authPlayer) //Auth Player (passing playerID and pin)
 
-	//Active Player control
-	api.GET("/button/:buttonID/action/:actionID/player/:userid/pin/:pin", controlFlipper) //If "Playing" and it is your player ID, then allow for control to be passed back (flippers and plunger)
-	api.GET("/autolaunch/player/:userid/pin/:pin", autoLaunchBall)
+	if cfg.TestMode {
+		log.Infoln("Adding rest routes for debugging")
+
+		//Active Player control
+		api.GET("/button/:buttonID/action/:actionID/player/:userid/pin/:pin", controlFlipper) //If "Playing" and it is your player ID, then allow for control to be passed back (flippers and plunger)
+		api.GET("/autolaunch/player/:userid/pin/:pin", autoLaunchBall)
+	}
 
 	admin := router.Group("/admin")
 
