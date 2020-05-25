@@ -180,7 +180,8 @@ class Game extends Component {
   updatePlayers = (playerList) => {
     var newList = JSON.parse(playerList);
     this.setState({players: newList});
-    this.loginUser(); //relogin, since the pin numbers could have changed
+
+    //this.loginUser(); //relogin, since the pin numbers could have changed
   }
 
   updateGame = (gameState) => {
